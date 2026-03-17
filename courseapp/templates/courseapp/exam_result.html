@@ -1,0 +1,48 @@
+<!-- exam_result.html: Shows exam result, score, and congratulatory message if passed -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h2>Exam Result</h2>
+        </div>
+        <div class="card-body">
+            {% if passed %}
+                <div class="alert alert-success">
+                    <h4>Congratulations!</h4>
+                    <p>You passed the exam.</p>
+                </div>
+            {% else %}
+                <div class="alert alert-danger">
+                    <h4>Try Again!</h4>
+                    <p>You did not pass the exam.</p>
+                </div>
+            {% endif %}
+            <p><strong>Score:</strong> {{ score }} / {{ total }} ({{ percent }}%)</p>
+            <h5>Exam Results:</h5>
+            <ul class="list-group">
+                {% for question in questions %}
+                    <li class="list-group-item">
+                        <strong>{{ question.text }}</strong><br>
+                        Your answer:
+                        <ul>
+                        {% for choice in selected_choices %}
+                            {% if choice.question_id == question.id %}
+                                <li>{{ choice.text }} {% if choice.is_correct %}<span class="badge bg-success">Correct</span>{% else %}<span class="badge bg-danger">Incorrect</span>{% endif %}</li>
+                            {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
