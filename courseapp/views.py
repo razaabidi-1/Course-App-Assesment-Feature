@@ -19,12 +19,12 @@ def show_exam_result(request, submission_id):
 	lesson = submission.lesson
 	questions = Question.objects.filter(lesson=lesson)
 	selected_choices = submission.choices.all()
+	selected_choice_ids = list(selected_choices.values_list('id', flat=True))
 	total = questions.count()
 	score = 0
 	for question in questions:
-		correct_choices = set(question.choice_set.filter(is_correct=True))
-		user_choices = set(selected_choices.filter(question=question))
-		if correct_choices == user_choices:
+		user_selected = [cid for cid in selected_choice_ids if Choice.objects.get(id=cid).question_id == question.id]
+		if question.is_get_score(user_selected):
 			score += 1
 	percent = int((score / total) * 100) if total > 0 else 0
 	passed = percent >= 70

@@ -1,8 +1,21 @@
 from django.db import models
 
+
+class Instructor(models.Model):
+	name = models.CharField(max_length=100)
+	def __str__(self):
+		return self.name
+
+class Learner(models.Model):
+	name = models.CharField(max_length=100)
+	def __str__(self):
+		return self.name
+
 class Course(models.Model):
 	name = models.CharField(max_length=200)
 	description = models.TextField()
+	instructors = models.ManyToManyField(Instructor, blank=True)
+	learners = models.ManyToManyField(Learner, blank=True)
 	def __str__(self):
 		return self.name
 
@@ -19,6 +32,9 @@ class Question(models.Model):
 	grade = models.IntegerField(default=1)
 	def __str__(self):
 		return self.text
+	def is_get_score(self, selected_choice_ids):
+		correct_choices = set(self.choice_set.filter(is_correct=True).values_list('id', flat=True))
+		return set(selected_choice_ids) == correct_choices
 
 class Choice(models.Model):
 	question = models.ForeignKey(Question, on_delete=models.CASCADE)
